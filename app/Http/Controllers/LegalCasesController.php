@@ -41,6 +41,8 @@ class LegalCasesController extends Controller
             'form_type' => $request->form_type,
             'client_name' => $request->client_name,
             'defendant_name' => $request->defendant_name,
+            'client_type' => $request->client_type,
+            'defendant_type' => $request->defendant_type,
             'payer_name' => $request->payer_name,
             'client_email' => $request->client_email,
             'defendant_email' => $request->defendant_email,
@@ -57,6 +59,7 @@ class LegalCasesController extends Controller
             'client_emotional_state' => $request->client_emotional_state,
             'drawer_number' => $request->drawer_number,
             'honorarium' => $request->honorarium,
+            'honorarium_currency' => $request->honorarium_currency,
         ]);
 
         return redirect()->route('legalcase.show', $legal_case->id)->with('success', 'Caso registrado con éxito');
@@ -69,11 +72,12 @@ class LegalCasesController extends Controller
     {
         $case = LegalCase::find($id);
         $payments = $case->payment()->orderBy('id', 'desc')->get();
+        $audiences = $case->audience()->orderBy('id', 'desc')->get();
 
         $totalValue = $payments->sum('value');
         $remaining_payment = $case->honorarium - $totalValue;
 
-        return view('view-case', ['case' => $case, 'payments' => $payments, 'remaining_payment' => $remaining_payment]);
+        return view('view-case', ['case' => $case, 'payments' => $payments, 'audiences' => $audiences, 'remaining_payment' => $remaining_payment]);
     }
 
     /**

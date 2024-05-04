@@ -36,6 +36,7 @@
         <x-back-button></x-back-button>
         <button type="button"  class="btn btn-success mt-2 ml-4" data-toggle="modal" data-target="#paymentModal">Agregar pago <i class="fas fa-fw fa-money-bill"></i></button>
         <button type="button"  class="btn btn-primary mt-2" data-toggle="modal" data-target="#satisfactionModal">Actualizar Satisfacción <i class="fa fa-fw fa-address-card"></i></button>
+        <button type="button"  class="btn btn-secondary mt-2" data-toggle="modal" data-target="#audienceModal">Audiencias <i class="fas fa-fw fa-calendar"></i></button>
         
         <div class="row mt-3">
             <div class="col-md-3 mb-3">
@@ -137,7 +138,14 @@
                         </div>
                         <div class="mt-2 text-center">
                             <h4>Saldo pendiente</h4>
-                            <h3 class="text-gray">$ {{ number_format($remaining_payment, 2) }}</h3>
+                            <h3 class="text-gray"> 
+                                @if ($case->honorarium_currency == "mxn")
+                                    <span class="text-danger">MX$</span>
+                                @else
+                                    <span class="text-success">US$</span>
+                                    
+                                @endif
+                                {{ number_format($remaining_payment, 2) }}</h3>
                         </div>
                     </div>
                 </div>
@@ -152,13 +160,23 @@
                                   <tr>
                                     <th scope="col">Cantidad</th>
                                     <th scope="col">Registrado el</th>
+                                    <th scope="col"></th>
                                   </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($payments as $payment)
                                         <tr>
-                                            <td>$ {{ number_format($payment->value, 2) }}</td>
+                                            <td>
+                                                @if ($case->honorarium_currency == "mxn")
+                                                    <span class="text-danger">MX$</span>
+                                                @else
+                                                    <span class="text-success">US$</span>
+                                                    
+                                                @endif
+                                                {{ number_format($payment->value, 2) }}
+                                            </td>
                                             <td>{{ $payment->created_at }}</td>
+                                            <td>{{ $payment->created_at->diffForHumans() }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -181,7 +199,7 @@
                             <h6 class="mb-0">Número de Caso: <b>{{ $case->file_number }}</b> </h6>
                         </div>
                         <div class="col-sm-6">
-                            <h6 class="mb-0">Número de Cajón: <b>{{ $case->drawer_number }}</b> </h6>
+                            <h6 class="mb-0">Ubicación del expediente: <b>{{ $case->drawer_number }}</b> </h6>
                         </div>
                     </div>
                     <hr/>
@@ -227,6 +245,14 @@
                     <hr>
                     <div class="row mb-2">
                         <div class="col-sm-4">
+                            <h6 class="mb-0 sm-text-right">Tipo de cliente</h6>
+                        </div>
+                        <div class="col-sm-8 text-secondary">
+                            <b>{{ $case->client_type }}</b>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-sm-4">
                             <h6 class="mb-0 sm-text-right">Nombre del cliente</h6>
                         </div>
                         <div class="col-sm-8 text-secondary">
@@ -260,7 +286,16 @@
                     <hr/>
                     <div class="row mb-2">
                         <div class="col-sm-4">
-                            <h6 class="mb-0 sm-text-right">Nombre del demandado</h6>
+                            <h6 class="mb-0 sm-text-right">Tipo de contraparte</h6>
+                        </div>
+                        <div class="col-sm-8 text-secondary">
+                            <b>{{ $case->defendant_type }}</b>
+                        </div>
+                    </div>
+
+                    <div class="row mb-2">
+                        <div class="col-sm-4">
+                            <h6 class="mb-0 sm-text-right">Nombre del contraparte</h6>
                         </div>
                         <div class="col-sm-8 text-secondary">
                             {{ $case->defendant_name }}
@@ -268,7 +303,7 @@
                     </div>
                     <div class="row mb-2">
                         <div class="col-sm-4">
-                            <h6 class="mb-0 sm-text-right">Telefono del demandado</h6>
+                            <h6 class="mb-0 sm-text-right">Telefono del contraparte</h6>
                         </div>
                         <div class="col-sm-8 text-secondary">
                             {{ $case->defendant_phone }}
@@ -276,7 +311,7 @@
                     </div>
                     <div class="row mb-2">
                         <div class="col-sm-4">
-                            <h6 class="mb-0 sm-text-right">Correo del demandado</h6>
+                            <h6 class="mb-0 sm-text-right">Correo del contraparte</h6>
                         </div>
                         <div class="col-sm-8 text-secondary">
                             {{ $case->defendant_email }}
@@ -284,7 +319,7 @@
                     </div>
                     <div class="row">
                         <div class="col-sm-4">
-                            <h6 class="mb-0 sm-text-right">Dirección del demandado</h6>
+                            <h6 class="mb-0 sm-text-right">Dirección del contraparte</h6>
                         </div>
                         <div class="col-sm-8 text-secondary">
                             {{ $case->defendant_address }}
@@ -429,11 +464,28 @@
         <form action="{{ route('legalcase.make-payment', $case->id) }}" method="POST">
             @csrf
             <div class="modal-body text-center">
+                <h3 >
+                    El pago será en
+                    @if ($case->honorarium_currency == "mxn")
+                    <span class="text-danger font-weight-bold"> 
+                        Pesos
+                    </span>
+                    @else
+                    <span class="text-success font-weight-bold"> 
+                        Dolares
+                    </span>
+                    @endif
+                </h3>
                 <div class="row">
-                    <label class="form-label" for="value">Cantidad de pago</label>
+
+                    <label class="form-label" for="value">Cantidad de pago </label>
                     <div class="input-group mb-2">
                         <div class="input-group-prepend">
-                        <div class="input-group-text">$</div>
+                        @if ($case->honorarium_currency == "mxn")
+                            <div class="input-group-text text-danger">MX$</div>
+                        @else
+                            <div class="input-group-text text-success">US$</div>
+                        @endif
                         </div>
                         <input type="number" class="form-control" id="value" placeholder="Ej. 30000" name="value" required>
                     </div>
@@ -445,6 +497,65 @@
               <input type="submit" class="btn btn-primary" value="Hacer Pago">
             </div>
         </form>
+      </div>
+    </div>
+</div>
+
+<div class="modal fade" id="audienceModal" tabindex="-1" role="dialog" aria-labelledby="audienceModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="audienceModal">Audiencias</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form action="{{ route('audience.store', $case->id) }}" method="POST">
+            @csrf
+            <div class="modal-body text-center">
+                <div class="form-group">
+                    <label for="audienceDate">Fecha de nueva audiencia</label>
+                    <input type="date" class="form-control w-50 m-auto" id="audienceDate" name="date">
+                </div>
+                <input type="submit" class="btn btn-primary w-50 m-auto text-center" value="Registrar nueva Fecha ">
+
+                <div class="card mt-5">
+                    <div class="card-body">
+                        <h5 class="text-center">Historial de Audiencias</h5>
+                        <div style="max-height: 200px; overflow:scroll; scrollbar-width: thin; overflow-x: hidden;">
+                            @if ($audiences->count() > 0)
+                            <table class="table">
+                                <thead>
+                                  <tr>
+                                    <th scope="col">Fecha de Audiencia</th>
+                                    <th scope="col">Fecha sin formato</th>
+                                    <th scope="col">Registrada</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($audiences as $audience)
+                                        <tr>
+                                            <td>{{ ucfirst(\Carbon\Carbon::parse($audience->date)->translatedFormat('F j, Y')) }} </td>
+                                            <td>{{ $audience->date }}</td>
+                                            <td>{{ $audience->created_at->diffForHumans() }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                              </table>
+                            @else
+                                <p class="text-center text-gray">No hay fechas de audiencia registradas</p>
+                            @endif
+                        </div>
+                        <p class="ml-5"></p>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        </div>
       </div>
     </div>
 </div>

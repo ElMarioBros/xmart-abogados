@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\Audience;
 
 class LegalCase extends Model
 {
@@ -17,11 +18,13 @@ class LegalCase extends Model
         'form_type',
         'file_number',
         'client_name',
+        'client_type',
         'client_email',
         'client_phone',
         'client_address',
         'client_photo',
         'defendant_name',
+        'defendant_type',
         'defendant_email',
         'defendant_phone',
         'defendant_address',
@@ -36,6 +39,7 @@ class LegalCase extends Model
         'drawer_number',
         'satisfaction_level',
         'honorarium',
+        'honorarium_currency',
     ];
 
     public function user(): BelongsTo
@@ -46,6 +50,11 @@ class LegalCase extends Model
     public function payment(): HasMany
     {
         return $this->hasMany(Payment::class);
+    }
+
+    public function audience(): HasMany
+    {
+        return $this->hasMany(Audience::class);
     }
 
 }
