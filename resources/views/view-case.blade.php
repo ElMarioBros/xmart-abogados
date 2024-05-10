@@ -196,16 +196,25 @@
                     <div class="card-body">
                     <div class="row ">
                         <div class="col-sm-6">
-                            <h6 class="mb-0">Número de Caso: <b>{{ $case->file_number }}</b> </h6>
+                            <h6 class="mb-0">{{ $case->file_number_type }}: <b>{{ $case->file_number }}</b> </h6>
                         </div>
                         <div class="col-sm-6">
                             <h6 class="mb-0">Ubicación del expediente: <b>{{ $case->drawer_number }}</b> </h6>
                         </div>
                     </div>
+                    <div class="row ">
+                        <div class="col-sm-6">
+                            <h6 class="mb-0">Autoridad penal: <b>{{ $case->authority_criminal }}</b> </h6>
+                        </div>
+                        <div class="col-sm-6">
+                            <h6 class="mb-0">Autoriadad federal: <b>{{ $case->authority_federal }}</b> </h6>
+                        </div>
+                    </div>
+
                     <hr/>
                     <div class="row">
                         <div class="col-sm-4">
-                            <h6 class="mb-0">Proyecto</h6>
+                            <h6 class="mb-0">Nombre del caso</h6>
                         </div>
                         <div class="col-sm-8 text-secondary">
                             {{ $case->project_name }}
@@ -214,7 +223,7 @@
                     <hr>
                     <div class="row">
                         <div class="col-sm-4">
-                            <h6 class="mb-0">Tipo de proyecto</h6>
+                            <h6 class="mb-0">Materia</h6>
                         </div>
                         <div class="col-sm-8 text-secondary">
                             {{ $case->form_type }}

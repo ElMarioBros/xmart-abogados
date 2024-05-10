@@ -21,7 +21,7 @@
     <form action="{{ route('legalcase.store') }}" method="POST">
         @csrf
 
-        <h5 class="fs-5 mb-3">Informacion del caso</h5>
+        <h4 class="fs-5 mb-3">Informacion del caso</h4>
         <div class="mb-3">
             <label for="project_name" class="form-label">Nombre del Caso</label>
             <input type="text" class="form-control" id="project_name" name="project_name" required>
@@ -50,12 +50,38 @@
         </div>
 
         <div class="mb-3">
-            <label for="file_number" class="form-label">Causa Penal</label>
-            <input type="text" class="form-control" id="file_number" name="file_number" required>
+            <label for="authority_criminal" class="form-label">Autoridad penal</label>
+            <input type="text" class="form-control" id="authority_criminal" name="authority_criminal" required>
         </div>
 
-        <h5 class="fs-5 mb-3 mt-5">Informacion de los implicados</h5>
-        <p>Cliente</p>
+        <div class="mb-3">
+            <label for="authority_federal" class="form-label">Autoridad federal</label>
+            <input type="text" class="form-control" id="authority_federal" name="authority_federal" required>
+        </div>
+
+        <hr>
+
+        <div class="mb-3">
+            <label for="file_number_type" class="form-label">Clasificacion</label>
+
+            <select class="form-control form-select-lg mb-3" id="file_number_type" name="file_number_type" required>
+                <option selected disabled>Seleccione una opción</option>
+                <option value="Número de expediente">Número de expediente</option>
+                <option value="NUC">NUC</option>
+                <option value="Causa Penal">Causa Penal</option>
+                <option value="Carpeta de Ejecución">Carpeta de Ejecución</option>
+            </select>
+
+        </div>
+        
+        <div class="mb-3">
+            <label for="file_number" id="file_number_label" class="form-label"> <span class="text-gray">Seleccione una clasificación</span></label>
+            <input type="text" class="form-control" id="file_number" name="file_number" required>
+        </div>
+        <hr>
+
+        <h4 class="fs-5 mb-3 mt-5">Informacion de los implicados</h4>
+        <h5 class="mt-3">Cliente</h5>
         <div class="mb-3">
             <label for="client_name" class="form-label">Nombre del Cliente</label>
             <input type="text" class="form-control" id="client_name" name="client_name" placeholder="Ej. Juan Sanchez Gonzalez" required>
@@ -67,7 +93,7 @@
             <select class="form-control form-select-lg mb-3" id="client_type" name="client_type" required>
                 <option selected disabled>Seleccione una opción</option>
                 <option value="Victima">Victima</option>
-                <option value="Implicado">Implicado</option>
+                <option value="Imputado">Imputado</option>
                 <option value="Ofendido">Ofendido</option>
                 <option value="Quejoso">Quejoso</option>
                 <option value="Actor">Actor</option>
@@ -95,7 +121,7 @@
         </div>
 
         <hr/>
-        <p>Contraparte</p>
+        <h5>Contraparte</h5>
         <div class="mb-3">
             <label for="defendant_name" class="form-label">Nombre del Contraparte</label>
             <input type="text" class="form-control" id="defendant_name" name="defendant_name" placeholder="Ej. Juan Sanchez Gonzalez" required>
@@ -135,7 +161,7 @@
         </div>
 
         <hr/>
-        <p>Pagador</p>
+        <h5>Pagador</h5>
         <div class="mb-3">
             <label for="payer_name" class="form-label">Nombre del Pagador</label>
             <input type="text" class="form-control" id="payer_name" name="payer_name" placeholder="Ej. Juan Sanchez Gonzalez" required>
@@ -156,7 +182,7 @@
             <input type="text" class="form-control" id="payer_address" name="payer_address" placeholder="Ej. Calle Rosal #331, Col. Juarez">
         </div>
         
-        <h5 class="fs-5 mb-3 mt-5">Informacion adicional</h5>
+        <h4 class="fs-5 mb-3 mt-5">Informacion adicional</h4>
         
         <div class="mb-3">
             <label for="observations" class="form-label">Observaciones</label>
@@ -219,4 +245,10 @@
 @stop
 
 @section('js')
+<script>
+    document.getElementById('file_number_type').addEventListener('change', function() {
+        var selectedOption = this.options[this.selectedIndex].text;
+        document.getElementById('file_number_label').innerText = selectedOption;
+    });
+</script>
 @stop
