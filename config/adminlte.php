@@ -317,11 +317,6 @@ return [
             'url'  => 'dashboard',
             'icon' => 'fas fa-fw fa-user',
         ],
-        [
-            'text' => 'Crear Nuevo Caso',
-            'url'  => 'create-case',
-            'icon' => 'fa fa-fw fa-user-plus',
-        ],
     ],
 
     /*
